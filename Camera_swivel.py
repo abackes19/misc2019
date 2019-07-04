@@ -17,11 +17,11 @@ while key != ord('q'):
     screen.addstr(1, 0, 'Current movement state:')
 
     if key == ord('a'):
-        RPL.servoWrite(motor_pin, 1000)
+        RPL.servoWrite(motor_pin, 1400)
         key_down = time.time()
         screen.addstr(1, 24, 'Counterclockwise')
     if key == ord('d'):
-        RPL.servoWrite(motor_pin, 2000)
+        RPL.servoWrite(motor_pin, 1600)
         key_down = time.time()
         screen.addstr(1, 24, 'Clockwise')
     if time.time() - key_down > 0.5:
@@ -30,3 +30,4 @@ while key != ord('q'):
     if key == ord('q'):
         RPL.servoWrite(motor_pin, 0)
         curses.endwin()
+    RPL.servoWrite(motor_pin, 0)
