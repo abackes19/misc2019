@@ -6,7 +6,7 @@ screen = curses.initscr()
 curses.noecho()
 curses.halfdelay(1)
 
-motor_pin = 1
+motor_pin = 2
 key = ''
 key_down = time.time()
 
