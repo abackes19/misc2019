@@ -1,5 +1,5 @@
-from bsmLib import RPL
-RPL.init()
+import RoboPiLib as RPL
+import setup
 
 import sys, tty, termios, signal
 
