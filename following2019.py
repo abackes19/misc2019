@@ -1,10 +1,8 @@
-import RoboPiLib as RPL
-RPL.RoboPiInit("/dev/ttyAMA0",115200)
+from bsmLib import RPL
+RPL.init()
 import time, math
 import post_to_web as PTW
 
-now = time.time()
-future = now
 
 x = "yes"
 
@@ -13,13 +11,12 @@ motorL = 0
 motorR = 1
 
 # analog sensors
-fana = 3
-bana = 4
-lana = 1
-
-# digital sensors
-fdig = 20
-bdig = 18
+fana = 0
+bana = 1
+lana = 2
+bl_ana = 3
+br_ana = 4
+fdig = 5
 
 # speeds
 go = 1750
@@ -28,24 +25,14 @@ back = 1250
 slowback = 1350
 
 
-#250 = l max
-#r = 500
-
-
-# turning times
-ninety = 1.5
-backup = .7
-
 # readings
 #Fanalog = RPL.analogRead(fana)
 #Banalog = RPL.analogRead(bana)
 #Lanalog = RPL.analogRead(lana)
-#fsensor = RPL.digitalRead(fdig)
-#bsensor = RPL.digitalRead(bdig)
+#fsensor = RPL.analogRead(fdig)
 
 # distances
 #straight = Fanalog - Banalog
-tolerance = 50
 fardist = 200
 closedist = 500
 gone = 50
@@ -75,8 +62,8 @@ def slightL():
     RPL.servoWrite(motorR,go)
 
 def slightR():
-    RPL.servoWrite(motorL,slowgo)#TURN LEFT TURN LEFT
-    RPL.servoWrite(motorR,slowback)
+    RPL.servoWrite(motorL,go)#TURN LEFT TURN LEFT
+    RPL.servoWrite(motorR,slowgo)
 def hardR():
     RPL.servoWrite(motorL,slowgo)#TURN RIGHT TURN RIGHT
     RPL.servoWrite(motorR,slowback)
@@ -87,15 +74,14 @@ while x != "no": # big loop
         Fanalog = RPL.analogRead(fana)
         Banalog = RPL.analogRead(bana)
         Lanalog = RPL.analogRead(lana)
-        fsensor = RPL.digitalRead(fdig)
-        bsensor = RPL.digitalRead(bdig)
+        bl_analog = RPL.analogRead(bl_ana)
+        br_analog = RPL.analogRead(br_ana)
+        fsensor = RPL.analogRead(fdig)
 
         PTW.state['Fanalog'] = Fanalog
         PTW.state['Banalog'] = Banalog
         PTW.state['Lanalog'] = Lanalog
         PTW.state['fsensor'] = fsensor
-        PTW.state['bsensor'] = bsensor
-        PTW.state['straight'] = straight
         forward()
 
 
@@ -107,12 +93,12 @@ while x != "no": # big loop
                         while fsensor > 50:
                             slow_reverse()
                         stop()
-                        while math.abs(bl_ana - br_ana) > 50 and math.abs(Fanalog - Banalog) > 50:
+                        while math.abs(bl_analog - br_analog) > 50 and math.abs(Fanalog - Banalog) > 50:
                             hardL()
                         forward()
                     else: # ... and left, then at end
                         stop()
-                        break # reverse! reverse!
+                        break # spin! spin!
 
 
                 # centering if whole robot too close or far away
@@ -131,13 +117,21 @@ while x != "no": # big loop
                 while fsensor > 50:
                     slow_reverse()
                 stop()
-                while math.abs(Fanalog - Banalog) > 50:
+                while math.abs(bl_analog - br_analog) > 50:
                     hardR()
                 forward()
             else:
                 forward()
+        PTW.post()
+
+
+    while True: # full spin
+        hardR()
+        if math.abs(bl_analog - br_analog) < 50 and fsensor < 50:
+            stop()
+            break
+    stop()
 
     #####################################################
-        PTW.post()
 
     x = input("continue? >")
