@@ -1,5 +1,5 @@
-import RoboPiLib as RPL
-RPL.RoboPiInit("/dev/ttyAMA0",115200)
+from bsmLib import RPL
+RPL.init()
 
 import sys, tty, termios, signal
 
@@ -9,13 +9,13 @@ l_turn = 2000
 
 try:
   RPL.pinMode(motor,RPL.SERVO)
-  RPL.servoWrite(motor,1500)
+  RPL.servoWrite(motor,0)
 except:
   pass
 
 def stopAll():
   try:
-    RPL.servoWrite(motor,1500)
+    RPL.servoWrite(motor,0)
   except:
     print "error except"
     pass
