@@ -11,18 +11,18 @@ motorL = 0
 motorR = 1
 
 # analog sensors
-fana = 0
-bana = 1
-lana = 2
+fana = 1
+bana = 2
+lana = 3
 bl_ana = 3
 br_ana = 4
-fdig = 5
+fdig = 0
 
 # speeds
-go = 1750
-slowgo = 1650
-back = 1250
-slowback = 1350
+go = 1700
+slowgo = 1600
+back = 1300
+slowback = 1400
 
 
 # readings
@@ -34,7 +34,7 @@ slowback = 1350
 # distances
 #straight = Fanalog - Banalog
 fardist = 200
-closedist = 500
+closedist = 300
 gone = 50
 
 
@@ -90,10 +90,10 @@ while x != "no": # big loop
             if Fanalog > gone: # ... and frontR
                 if fsensor > 150: # ... and front
                     if Lanalog <= gone: # but not left, at turn so turn left TURN TURN TURN
-                        while fsensor > 50:
+                        while fsensor > 100:
                             slow_reverse()
                         stop()
-                        while math.abs(bl_analog - br_analog) > 50 and math.abs(Fanalog - Banalog) > 50:
+                        while math.abs(bl_analog - br_analog) > 30 and math.abs(Fanalog - Banalog) > 30:
                             hardL()
                         forward()
                     else: # ... and left, then at end
@@ -104,17 +104,18 @@ while x != "no": # big loop
                 # centering if whole robot too close or far away
                 elif Fanalog >= closedist or Banalog >= closedist: # too close
                     slightL()
-
                 elif Fanalog <= fardist or Banalog <= fardist:
                     slightR()
+                else:
+                    forward()
 
 
             else: # no front or front right, but back right
                 forward() # need to continue so doesn't turn too sharp, will turn when get front
 
         else: # back right gets nothing, turn right
-            if fsensor > 50 and Lanalog > 50: #TURN RIGHT TURN RIGHT TURN RIGHT
-                while fsensor > 50:
+            if fsensor > 30 and Lanalog > 30: #TURN RIGHT TURN RIGHT TURN RIGHT
+                while fsensor > 100:
                     slow_reverse()
                 stop()
                 while math.abs(bl_analog - br_analog) > 50:
