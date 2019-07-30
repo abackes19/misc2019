@@ -11,12 +11,13 @@ motorL = 0
 motorR = 1
 
 # analog sensors
-fana = 1
-bana = 2
-lana = 3
-bl_ana = 3
+
+fana = 2
+bana = 3
+lana = 7
+bl_ana = 5
 br_ana = 4
-fdig = 0
+fdig = 0, 1
 
 # speeds
 go = 1700
